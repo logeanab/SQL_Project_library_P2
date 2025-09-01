@@ -410,7 +410,6 @@ GROUP BY 1, 2
 Write a query to identify members who have issued books more than twice with the status "damaged" in the books table. Display the member name, book title, and the number of times they've issued damaged books.    
 
 '''sql
-
 SELECT
 	m.member_name,
 	b.book_title,
@@ -423,7 +422,6 @@ JOIN books AS b
 	ON i.issued_book_isbn = b.isbn
 WHERE LOWER(b.status) = 'damaged'
 GROUP BY 1, 2
-
 '''
 
 
@@ -438,7 +436,6 @@ If the book is available, it should be issued, and the status in the books table
 If the book is not available (status = 'no'), the procedure should return an error message indicating that the book is currently not available.
 
 ```sql
-
 CREATE OR REPLACE PROCEDURE issue_book(p_issued_id VARCHAR(10), p_issued_member_id VARCHAR(30), p_issued_book_isbn VARCHAR(30), p_issued_emp_id VARCHAR(10))
 LANGUAGE plpgsql
 AS $$
@@ -487,7 +484,6 @@ CALL issue_book('IS156', 'C108', '978-0-375-41398-8', 'E104');
 
 SELECT * FROM books
 WHERE isbn = '978-0-375-41398-8'
-
 ```
 
 
@@ -505,7 +501,6 @@ Description: Write a CTAS query to create a new table that lists each member and
     Total fines
 
 '''sql
-
 CREATE TABLE overude_books_summary AS
 SELECT
 	i.issued_member_id AS member_id,
@@ -531,7 +526,6 @@ LEFT JOIN return_status r
 GROUP BY i.issued_member_id;
 
 SELECT * FROM overude_books_summary
-
 '''
 
 ## Reports
