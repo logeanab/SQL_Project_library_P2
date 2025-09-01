@@ -500,33 +500,7 @@ Description: Write a CTAS query to create a new table that lists each member and
     Number of overdue books
     Total fines
 
-'''sql
-CREATE TABLE overude_books_summary AS
-SELECT
-	i.issued_member_id AS member_id,
-	COUNT(
-		CASE
-			WHEN r.return_date IS NULL
-			AND CURRENT_DATE - i.issued_date > 30
-			THEN 1 
-		END
-	) AS overdue_books,
-	SUM(
-		CASE
-			WHEN r.return_date IS NULL
-			AND CURRENT_DATE - i.issued_date > 30
-			THEN (CURRENT_DATE - i.issued_date - 30) * 0.50
-			ELSE 0
-			END
-	) AS total_fines,
-		COUNT(*) AS total_books_issued
-FROM issued_status i
-LEFT JOIN return_status r
-	ON i.issued_id = r.issued_id --Replace with actual join column
-GROUP BY i.issued_member_id;
 
-SELECT * FROM overude_books_summary
-'''
 
 ## Reports
 
