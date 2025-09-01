@@ -199,7 +199,22 @@ GROUP BY 1, 2
 Write a query to identify members who have issued books more than twice with the status "damaged" in the books table. Display the member name, book title, and the number of times they've issued damaged books.
 */
 
---I SHOULD ANSWER THIS
+***
+	
+SELECT
+	m.member_name,
+	b.book_title,
+	COUNT(*) AS damaged_count
+
+FROM issued_status AS i
+JOIN members AS m
+	ON i.issued_member_id = m.member_id
+JOIN books AS b
+	ON i.issued_book_isbn = b.isbn
+WHERE LOWER(b.status) = 'damaged'
+GROUP BY 1, 2
+	
+***
 
 /*Task 19: Stored Procedure Objective: Create a stored procedure to manage the status of books in a library system. Description: Write a stored procedure that updates the status of a book in the library based on its issuance. The procedure should function as follows: The stored procedure should take the book_id as an input parameter. The procedure should first check if the book is available (status = 'yes'). If the book is available, it should be issued, and the status in the books table should be updated to 'no'. If the book is not available (status = 'no'), the procedure should return an error message indicating that the book is currently not available.
 */
@@ -256,7 +271,36 @@ CALL issue_book('IS146', 'C109','978-0-375-41398-8', 'E105' )
 
 Description: Write a CTAS query to create a new table that lists each member and the books they have issued but not returned within 30 days. The table should include: The number of overdue books. The total fines, with each day's fine calculated at $0.50. The number of books issued by each member. The resulting table should show: Member ID Number of overdue books Total fines*/
 
---I SHOULD ANSWER THIS
+***
+	
+SELECT * FROM overude_books_summary
+CREATE TABLE overude_books_summary AS
+SELECT
+	i.issued_member_id AS member_id,
+	COUNT(
+		CASE
+			WHEN r.return_date IS NULL
+			AND CURRENT_DATE - i.issued_date > 30
+			THEN 1 
+		END
+	) AS overdue_books,
+	SUM(
+		CASE
+			WHEN r.return_date IS NULL
+			AND CURRENT_DATE - i.issued_date > 30
+			THEN (CURRENT_DATE - i.issued_date - 30) * 0.50
+			ELSE 0
+			END
+	) AS total_fines,
+		COUNT(*) AS total_books_issued
+FROM issued_status i
+LEFT JOIN return_status r
+	ON i.issued_id = r.issued_id --Replace with actual join column
+GROUP BY i.issued_member_id;
+	
+SELECT * FROM issued_status
+	
+***
 
 
 
